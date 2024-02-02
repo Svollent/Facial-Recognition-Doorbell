@@ -4,8 +4,6 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 
 # Initialize AWS Rekognition client
-aws_access_key_id = 'AKIAT6T25KVE6Q5L5CED'
-aws_secret_access_key = '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'
 region_name = 'eu-central-1'
 rekognition_client = boto3.client('rekognition', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key, region_name=region_name)
 
