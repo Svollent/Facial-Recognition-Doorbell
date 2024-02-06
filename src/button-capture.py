@@ -5,11 +5,15 @@ import os
 
 cap = cv2.VideoCapture(0)
 
+# Set the resolution of the captured video
 cap.set(3, 1280)
 cap.set(4, 720)
 
 s3 = boto3.client('s3')
+
 bucket = 'doorbell-images1'
+
+imagepath = r"C:\Coding\rekog-doorbell\Doorbell-Images"
 
 while True:
     ret, frame = cap.read()
@@ -17,22 +21,18 @@ while True:
     key = cv2.waitKey(1)
     
     if key == ord(" "):
-
-
-        c = datetime.now()
-
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         
-        print(timestamp)
+        #Creates image, naming the based on the time it was taken
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filepath = os.path.join(imagepath, f"{timestamp}.jpg")
+        cv2.imwrite(filepath, frame)
 
-        cv2.imwrite(f"{timestamp}.jpg", frame)
+        #Uploads the Picture taken to the s3 bucket
+        s3.upload_file(filepath, bucket, f'{timestamp}.jpg')
 
-        s3.upload_file(f'{timestamp}.jpg', 'doorbell-images1', f'{timestamp}.jpg')
+    cv2.imshow("Doorbell Camera", frame)
 
-        print(f"Image saved as {timestamp}.jpg")
-
-    cv2.imshow("frame", frame)
-
+    # If q is pressed the program shuts down
     if key == ord("q"):
         break
 
